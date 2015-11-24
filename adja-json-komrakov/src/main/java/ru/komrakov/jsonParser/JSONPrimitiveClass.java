@@ -50,9 +50,9 @@ public class JSONPrimitiveClass implements JSONPrimitive{
         Character lastChar = probe.charAt(probe.length() - 1);
 
         //FIXME: DRY: это уже было где-то
-        if ((firstChar.equals((char) 34)) && (lastChar.equals((char) 34))) {
+        if ((firstChar.equals((char) QUOTES_CODE)) && (lastChar.equals((char)QUOTES_CODE))) {
             //FIXME: Лучше добавлять сообщения исключениям, проще жить. Что это за IllegalState?
-            throw new IllegalStateException();
+            throw new IllegalStateException("Boolean value shouldn't be in quotes");
         }
 
         if (looksLikeBoolean(probe)) {
@@ -137,11 +137,11 @@ public class JSONPrimitiveClass implements JSONPrimitive{
 
         //FIXME: ^_^
         if ((firstChar.equals((char)QUOTES_CODE))&&(!lastChar.equals((char)QUOTES_CODE))){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("String value shouldn't contain not closed quote");
         }
 
         if ((!firstChar.equals((char)QUOTES_CODE))&&(lastChar.equals((char)QUOTES_CODE))){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("String value shouldn't contain not closed quote");
         }
 
         return getRidOfQoutes((String)value);
@@ -154,7 +154,7 @@ public class JSONPrimitiveClass implements JSONPrimitive{
 
     @Override
     public boolean isJsonNull() {
-        if (value==null){
+        if (value == null){
             return true;
         }
         if (((String)value).toLowerCase().equals("null")){
