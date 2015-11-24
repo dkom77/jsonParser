@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by User on 08.11.2015.
- */
 public class StreamReader {
 
     public static int END_OF_STREAM = -1;
@@ -29,14 +26,14 @@ public class StreamReader {
     private Reader reader;
 
     //FIXME: в яве с большой буквы принято называть только типы/классы. Константы - большими буквами.
-    private static Map<Character,String> CharEventMap = new HashMap<Character, String>();
+    private static Map<Character,String> сharEventMap = new HashMap<Character, String>();
     {
-        CharEventMap.put('{',JSON_OBJECT_START);
-        CharEventMap.put('}',JSON_OBJECT_END);
-        CharEventMap.put(',',JSON_OBJECT_SEPARATOR);
-        CharEventMap.put('[',JSON_ARRAY_START);
-        CharEventMap.put(']',JSON_ARRAY_END);
-        CharEventMap.put(':',JSON_OBJECT_VALUE_START);
+        сharEventMap.put('{',JSON_OBJECT_START);
+        сharEventMap.put('}',JSON_OBJECT_END);
+        сharEventMap.put(',',JSON_OBJECT_SEPARATOR);
+        сharEventMap.put('[',JSON_ARRAY_START);
+        сharEventMap.put(']',JSON_ARRAY_END);
+        сharEventMap.put(':',JSON_OBJECT_VALUE_START);
     }
 
     public StreamReader(Reader r){
@@ -58,7 +55,7 @@ public class StreamReader {
             return a;
         }
 
-        if (CharEventMap.get((char)code) != null){
+        if (сharEventMap.get((char)code) != null){
             codes = new ArrayList<>();
             codes.add(code);
             return convertCodeSequenceToArray(codes);
@@ -67,7 +64,7 @@ public class StreamReader {
         while (!isTerminal(code)){
             codes.add(code);
             code = readCharCodeFromStream();
-            if (CharEventMap.get((char)code) != null){
+            if (сharEventMap.get((char)code) != null){
                 restoreStreamPosition();
                 return convertCodeSequenceToArray(codes);
             }

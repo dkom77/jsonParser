@@ -4,10 +4,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import ru.komrakov.jsonParser.JSONArrayClass;
 
-/**
- * Created by User on 08.11.2015.
- */
-
 public class MyJSONArray extends JSONArrayClass{
 
     @Override
