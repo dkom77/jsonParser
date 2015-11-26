@@ -1,15 +1,8 @@
 package ru.komrakov.jsonParser.StreamReader;
 
-import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableSet;
-import org.apache.commons.lang3.ArrayUtils;
 import ru.komrakov.jsonParser.StringHelper;
 
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 
 public class SmartStreamReader {
 
@@ -20,7 +13,6 @@ public class SmartStreamReader {
     }
 
     public String readNext() throws IllegalArgumentException{
-        //Integer[] chunk = streamReader.readNext();
         Character[] chunk = streamReader.readNext();
 
         if (chunk[0].equals(StreamReaderStatic.END_OF_STREAM)){

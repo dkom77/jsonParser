@@ -46,7 +46,6 @@ public class StringHelper {
     }
 
     //FIXME: на такие вещи надо писать юнит-тесты :(
-    //public static List<Integer> removeInsignificantSymbols(Integer[] chunk){
     public static List<Character> removeInsignificantSymbols(Character[] chunk){
         List<Character> result = new ArrayList<>();
         boolean remove = true;
@@ -59,7 +58,7 @@ public class StringHelper {
             }
 
             if (remove){
-                if (!INDENTATION_SYMBOLS.contains((char)probe))
+                if (!INDENTATION_SYMBOLS.contains(probe))
                     result.add(probe);
             }else{
                 result.add(probe);
