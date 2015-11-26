@@ -1,5 +1,6 @@
 package ru.komrakov.jsonParser;
 
+import ru.komrakov.jsonParser.StreamReader.StreamReaderStatic;
 import ru.nojs.json.JSONArray;
 import ru.nojs.json.JSONNull;
 import ru.nojs.json.JSONObject;
@@ -12,7 +13,7 @@ import java.util.regex.Pattern;
 
 public class JSONPrimitiveClass implements JSONPrimitive{
 
-    private final static int QUOTES_CODE = 34;
+    //private final static int QUOTES_CODE = 34;
 
 
     protected Object value;
@@ -26,7 +27,7 @@ public class JSONPrimitiveClass implements JSONPrimitive{
 
         if (looksLikeBoolean((String)o)){
             value = o;
-            Boolean b = this.getAsBoolean();
+            this.getAsBoolean(); //value checked during process
         }
     }
 
@@ -46,12 +47,15 @@ public class JSONPrimitiveClass implements JSONPrimitive{
 
         String probe = (String) value;
 
-        Character firstChar = probe.charAt(0);
-        Character lastChar = probe.charAt(probe.length() - 1);
+        //Character firstChar = probe.charAt(0);
+        //Character lastChar = probe.charAt(probe.length() - 1);
 
+        /*
         //FIXME: DRY: это уже было где-то
-        if ((firstChar.equals((char) QUOTES_CODE)) && (lastChar.equals((char)QUOTES_CODE))) {
-            //FIXME: Лучше добавлять сообщения исключениям, проще жить. Что это за IllegalState?
+        if ((firstChar.equals((char) StreamReaderStatic.QUOTES_SYMBOL_CODE)) && (lastChar.equals((char)StreamReaderStatic.QUOTES_SYMBOL_CODE))) {
+            throw new IllegalStateException("Boolean value shouldn't be in quotes");
+        }*/
+        if (StringHelper.stringValueInQuotes(probe)){
             throw new IllegalStateException("Boolean value shouldn't be in quotes");
         }
 
@@ -62,7 +66,7 @@ public class JSONPrimitiveClass implements JSONPrimitive{
             if (probe.equals("false")) {
                 return false;
             }
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Boolean value spelled incorrectly");
         }
         throw new IllegalStateException();
 
@@ -90,7 +94,7 @@ public class JSONPrimitiveClass implements JSONPrimitive{
 
     @Override
     public int getAsInt() {
-        return Integer.parseInt((String)value);
+        return Integer.parseInt((String) value);
     }
 
     @Override
@@ -131,20 +135,25 @@ public class JSONPrimitiveClass implements JSONPrimitive{
     @Override
     public String getAsString() {
 
-        String probe = (String)value;
-        Character firstChar = probe.charAt(0);
-        Character lastChar = probe.charAt(probe.length()-1);
+        //String probe = (String)value;
+        //Character firstChar = probe.charAt(0);
+        //Character lastChar = probe.charAt(probe.length()-1);
 
         //FIXME: ^_^
+        /*
         if ((firstChar.equals((char)QUOTES_CODE))&&(!lastChar.equals((char)QUOTES_CODE))){
             throw new IllegalArgumentException("String value shouldn't contain not closed quote");
         }
 
         if ((!firstChar.equals((char)QUOTES_CODE))&&(lastChar.equals((char)QUOTES_CODE))){
             throw new IllegalArgumentException("String value shouldn't contain not closed quote");
+        }*/
+
+        if (StringHelper.containNotClosedQuotes((String)value)){
+            throw new IllegalArgumentException("String value shouldn't contain not closed quote");
         }
 
-        return getRidOfQoutes((String)value);
+        return StringHelper.getRidOfQuotes((String) value);
     }
 
     @Override
@@ -176,12 +185,17 @@ public class JSONPrimitiveClass implements JSONPrimitive{
     private Boolean looksLikeBoolean(String string) {
         String regex = ".*([fF][aA][lL][sS][eE]).*|.*([tT][rR][uU][eE]).*";
         Matcher m = Pattern.compile(regex).matcher(string);
+
+        /*
         if (m.matches()){
             return true;
         }
         return false;
+        */
+        return m.matches();
     }
 
+    /*
     private String getRidOfQoutes(String value){
         Character firstChar = value.charAt(0);
         Character lastChar = value.charAt(value.length() - 1);
@@ -189,6 +203,6 @@ public class JSONPrimitiveClass implements JSONPrimitive{
             value = value.substring(1, value.length()-1);
         }
         return value;
-    }
+    }*/
 
 }

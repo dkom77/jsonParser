@@ -36,10 +36,6 @@ public class JSONArrayClass implements JSONArray{
 
     @Override
     public JSONElement get(int i) {
-        if(i < 0 || i > array.size()){
-            //FIXME: null? ну нет, нечего промахиваться.. OutOfBoundsException. Причем его уже кидает за тебя List
-            return null;
-        }
         return array.get(i);
     }
 

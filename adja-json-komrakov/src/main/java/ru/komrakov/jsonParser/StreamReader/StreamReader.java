@@ -12,6 +12,7 @@ public class StreamReader {
     private Reader reader;
 
     private static Map<Character,String> сharEventMap = new HashMap<>();
+    //TODO: Convert HasMap to Set
     static {
         сharEventMap.put('{',StreamReaderStatic.JSON_OBJECT_START);
         сharEventMap.put('}',StreamReaderStatic.JSON_OBJECT_END);
