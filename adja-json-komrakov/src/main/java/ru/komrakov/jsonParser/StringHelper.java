@@ -27,16 +27,16 @@ public class StringHelper {
                     ||(!value.startsWith(QUOTE))&&value.endsWith(QUOTE);
     }
 
-    public static List<Integer> removeEscapeChar(Integer[] chunk){
+    public static List<Character> removeEscapeChar(Character[] chunk){
         //get rid of \" combination
-        List<Integer> result = new ArrayList<>();
-        for (int i:chunk){
-            if (i == QUOTES_SYMBOL_CODE){
+        List<Character> result = new ArrayList<>();
+        for (char i:chunk){
+            if (i == (char)QUOTES_SYMBOL_CODE){
                 if (result.size() == 0){
                     result.add(i);
                     continue;
                 }
-                if (result.get(result.size()-1) == ESCAPE_SYMBOL_CODE) {
+                if (result.get(result.size()-1).equals((char)ESCAPE_SYMBOL_CODE)) {
                     result.remove(result.size()-1);
                 }
             }
@@ -46,10 +46,11 @@ public class StringHelper {
     }
 
     //FIXME: на такие вещи надо писать юнит-тесты :(
-    public static List<Integer> removeInsignificantSymbols(Integer[] chunk){
-        List<Integer> result = new ArrayList<>();
+    //public static List<Integer> removeInsignificantSymbols(Integer[] chunk){
+    public static List<Character> removeInsignificantSymbols(Character[] chunk){
+        List<Character> result = new ArrayList<>();
         boolean remove = true;
-        for (int probe: chunk){
+        for (char probe: chunk){
 
             if (probe == QUOTES_SYMBOL_CODE){
                 if ((result.size() == 0)||(result.get(result.size()-1) != ESCAPE_SYMBOL_CODE)){

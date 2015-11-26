@@ -20,9 +20,10 @@ public class SmartStreamReader {
     }
 
     public String readNext() throws IllegalArgumentException{
-        Integer[] chunk = streamReader.readNext();
+        //Integer[] chunk = streamReader.readNext();
+        Character[] chunk = streamReader.readNext();
 
-        if (chunk[0] == StreamReaderStatic.END_OF_STREAM){
+        if (chunk[0].equals(StreamReaderStatic.END_OF_STREAM)){
             return StreamReaderStatic.NO_MORE_SYMBOLS_TO_READ;
         }
         chunk = StreamReaderStatic.convertCodeSequenceToArray(StringHelper.removeInsignificantSymbols(chunk));

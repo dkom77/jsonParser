@@ -2,13 +2,15 @@ package ru.komrakov.jsonParser.StreamReader;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
+import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 public class StreamReaderStatic {
 
-    public final static int END_OF_STREAM = -1;
+    public final static char END_OF_STREAM = (char)-1;
     public final static String NO_MORE_SYMBOLS_TO_READ = "";
 
     //FIXME: DRY: сколько раз в этом проекте пришлось объявить { } и тп? :) все надо собрать в одну кучу.
@@ -51,6 +53,7 @@ public class StreamReaderStatic {
             JSON_OBJECT_END.charAt(0), JSON_OBJECT_SEPARATOR.charAt(0), JSON_ARRAY_START.charAt(0),
             JSON_ARRAY_END.charAt(0), JSON_PROPERTY_VALUE_DELIMITER.charAt(0));
 
+    /*
     static Integer[] convertCodeSequenceToArray(List<Integer> codes) {
         return codes.toArray(new Integer[codes.size()]);
     }
@@ -64,6 +67,18 @@ public class StreamReaderStatic {
         }
         return new String(codesSeq, Charsets.UTF_8);
     }
+    */
+
+    static Character[] convertCodeSequenceToArray(List<Character> codes) {
+        return codes.toArray(new Character[codes.size()]);
+    }
+
+    static String convertCodeSequenceToString(Character[] codes){
+        char[] codesSeq = ArrayUtils.toPrimitive(codes);
+        byte[] bytes = new String(codesSeq).getBytes();
+        return new String(bytes, Charsets.UTF_8);
+    }
+
 
     static boolean isJSONControlSymbol(char c){
         return JSON_SYMBOLS_SET.contains(c);
