@@ -1,6 +1,5 @@
 package ru.komrakov.jsonParser;
 
-import ru.komrakov.jsonParser.StreamReader.StreamReaderStatic;
 import ru.nojs.json.JSONArray;
 import ru.nojs.json.JSONNull;
 import ru.nojs.json.JSONObject;
@@ -12,16 +11,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class JSONPrimitiveClass implements JSONPrimitive{
-
-    //private final static int QUOTES_CODE = 34;
-
-
     protected Object value;
 
     public JSONPrimitiveClass(Object o){
         value = o;
-        //FIXME: String::equalsIgnoreCase()
-        if (((String)o).toLowerCase().equals("null")){
+
+        if (((String)o).equalsIgnoreCase("null")){
             value = null;
         }
 
@@ -30,7 +25,6 @@ public class JSONPrimitiveClass implements JSONPrimitive{
             this.getAsBoolean(); //value checked during process
         }
     }
-
 
     @Override
     public BigDecimal getAsBigDecimal() {
@@ -47,14 +41,6 @@ public class JSONPrimitiveClass implements JSONPrimitive{
 
         String probe = (String) value;
 
-        //Character firstChar = probe.charAt(0);
-        //Character lastChar = probe.charAt(probe.length() - 1);
-
-        /*
-        //FIXME: DRY: это уже было где-то
-        if ((firstChar.equals((char) StreamReaderStatic.QUOTES_SYMBOL_CODE)) && (lastChar.equals((char)StreamReaderStatic.QUOTES_SYMBOL_CODE))) {
-            throw new IllegalStateException("Boolean value shouldn't be in quotes");
-        }*/
         if (StringHelper.stringValueInQuotes(probe)){
             throw new IllegalStateException("Boolean value shouldn't be in quotes");
         }
@@ -68,8 +54,7 @@ public class JSONPrimitiveClass implements JSONPrimitive{
             }
             throw new IllegalArgumentException("Boolean value spelled incorrectly");
         }
-        throw new IllegalStateException();
-
+        throw new IllegalStateException("Value is not boolean");
     }
 
     @Override
@@ -135,20 +120,6 @@ public class JSONPrimitiveClass implements JSONPrimitive{
     @Override
     public String getAsString() {
 
-        //String probe = (String)value;
-        //Character firstChar = probe.charAt(0);
-        //Character lastChar = probe.charAt(probe.length()-1);
-
-        //FIXME: ^_^
-        /*
-        if ((firstChar.equals((char)QUOTES_CODE))&&(!lastChar.equals((char)QUOTES_CODE))){
-            throw new IllegalArgumentException("String value shouldn't contain not closed quote");
-        }
-
-        if ((!firstChar.equals((char)QUOTES_CODE))&&(lastChar.equals((char)QUOTES_CODE))){
-            throw new IllegalArgumentException("String value shouldn't contain not closed quote");
-        }*/
-
         if (StringHelper.containNotClosedQuotes((String)value)){
             throw new IllegalArgumentException("String value shouldn't contain not closed quote");
         }
@@ -163,13 +134,7 @@ public class JSONPrimitiveClass implements JSONPrimitive{
 
     @Override
     public boolean isJsonNull() {
-        if (value == null){
-            return true;
-        }
-        if (((String)value).toLowerCase().equals("null")){
-            return true;
-        }
-        return false;
+        return (value == null)||((String)value).equalsIgnoreCase("null");
     }
 
     @Override
@@ -185,24 +150,7 @@ public class JSONPrimitiveClass implements JSONPrimitive{
     private Boolean looksLikeBoolean(String string) {
         String regex = ".*([fF][aA][lL][sS][eE]).*|.*([tT][rR][uU][eE]).*";
         Matcher m = Pattern.compile(regex).matcher(string);
-
-        /*
-        if (m.matches()){
-            return true;
-        }
-        return false;
-        */
         return m.matches();
     }
-
-    /*
-    private String getRidOfQoutes(String value){
-        Character firstChar = value.charAt(0);
-        Character lastChar = value.charAt(value.length() - 1);
-        if ((firstChar.equals((char)QUOTES_CODE))&&(lastChar.equals((char)QUOTES_CODE))){
-            value = value.substring(1, value.length()-1);
-        }
-        return value;
-    }*/
 
 }
