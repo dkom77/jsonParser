@@ -1,5 +1,7 @@
 package ru.komrakov.jsonParser;
 
+import ru.komrakov.jsonParser.StreamReader.SmartStreamReader;
+import ru.komrakov.jsonParser.StreamReader.StreamReader;
 import ru.nojs.json.JSONElement;
 import ru.nojs.json.StreamingJsonParser;
 
@@ -10,9 +12,6 @@ public class ImplementedJsonParser implements StreamingJsonParser {
     @Override
     public JSONElement parse(Reader r) throws IllegalArgumentException{
         SmartStreamReader reader = new SmartStreamReader(r);
-
-        //FIXME: зачем так делать? только бесить варнингами IDEA-инспектора. Лучше убрать, здесь и везде
-        //Комментарии пока оставил чтобы виднее было где и как было исправлено
         return buildJSON(null, reader);
     }
 
@@ -36,7 +35,7 @@ public class ImplementedJsonParser implements StreamingJsonParser {
             element = new JSONObjectClass();
             while (!value.equals(StreamReader.JSON_OBJECT_END)) {
                 value = reader.readNext();//get rid of "{"
-                String propertyName = getRidOfQuotes(value);
+                String propertyName = reader.getRidOfQuotes(value);
                 JSONElement propertyValue = buildJSON(null, reader);
                 if (propertyValue == null) {
                     throw new IllegalArgumentException("JSON property can't be null");
@@ -51,6 +50,7 @@ public class ImplementedJsonParser implements StreamingJsonParser {
         return element;
     }
 
+    /*
     private String getRidOfQuotes(String value){
         Character firstChar = value.charAt(0);
         Character lastChar = value.charAt(value.length()-1);
@@ -62,8 +62,5 @@ public class ImplementedJsonParser implements StreamingJsonParser {
         }
         return value;
     }
-
-    //FIXME: в vcs обычно не хранят закоменченый код. На то она и vcs. Если нужно что-то старое - чекаут.
-    //ф-я main в этом классе не нужна. использовалась для тестов
-
+    */
 }

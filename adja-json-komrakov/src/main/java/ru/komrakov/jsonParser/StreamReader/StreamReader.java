@@ -1,11 +1,12 @@
-package ru.komrakov.jsonParser;
+package ru.komrakov.jsonParser.StreamReader;
+
+import com.google.common.base.Charsets;
+import jdk.nashorn.internal.ir.LiteralNode;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class StreamReader {
 
@@ -19,7 +20,7 @@ public class StreamReader {
     public final static String JSON_OBJECT_SEPARATOR = ",";
     public final static String JSON_ARRAY_START = "[";
     public final static String JSON_ARRAY_END = "]";
-    public final static String JSON_OBJECT_VALUE_START = ":";
+    public final static String JSON_PROPERTY_VALUE_DELIMITER = ":";
 
 
     private static int READ_AHEAD_BUFFER_SIZE = 10;
@@ -33,8 +34,9 @@ public class StreamReader {
         сharEventMap.put(',',JSON_OBJECT_SEPARATOR);
         сharEventMap.put('[',JSON_ARRAY_START);
         сharEventMap.put(']',JSON_ARRAY_END);
-        сharEventMap.put(':',JSON_OBJECT_VALUE_START);
+        сharEventMap.put(':', JSON_PROPERTY_VALUE_DELIMITER);
     }
+
 
     public StreamReader(Reader r){
         this.reader = r;
@@ -58,7 +60,7 @@ public class StreamReader {
         if (сharEventMap.get((char)code) != null){
             codes = new ArrayList<>();
             codes.add(code);
-            return convertCodeSequenceToArray(codes);
+            return StreamReaderStatic.convertCodeSequenceToArray(codes);
         }
 
         while (!isTerminal(code)){
@@ -66,14 +68,15 @@ public class StreamReader {
             code = readCharCodeFromStream();
             if (сharEventMap.get((char)code) != null){
                 restoreStreamPosition();
-                return convertCodeSequenceToArray(codes);
+                return StreamReaderStatic.convertCodeSequenceToArray(codes);
             }
             markStreamPosition();
         }
 
-        return convertCodeSequenceToArray(codes);
+        return StreamReaderStatic.convertCodeSequenceToArray(codes);
     }
 
+    /*
     //FIXME: DRY: я это видел уже где-то!
     private Integer[] convertCodeSequenceToArray(List<Integer> codes) {
         Integer[] codesSeq = new Integer[codes.size()];
@@ -83,14 +86,19 @@ public class StreamReader {
         return codesSeq;
 
     }
+    */
 
     private Boolean isTerminal(Integer code){
         //FIXME: return code == END_OF_STREAM;
+        /*
         Boolean isTerminal = false;
         if (code == END_OF_STREAM){
             isTerminal = true;
         }
         return isTerminal;
+         */
+        return code == END_OF_STREAM;
+
     }
 
     private void markStreamPosition(){

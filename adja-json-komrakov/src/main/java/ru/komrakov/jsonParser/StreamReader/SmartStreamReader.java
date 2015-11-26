@@ -1,10 +1,12 @@
-package ru.komrakov.jsonParser;
+package ru.komrakov.jsonParser.StreamReader;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -12,8 +14,29 @@ public class SmartStreamReader {
 
     public final static int ESCAPE_SYMBOL_CODE = 92;
     public final static int QUOTES_SYMBOL_CODE = 34;
-    public final String JSON_PROPERTY_VALUE_DELIMITER = ":";
+    //public final String JSON_PROPERTY_VALUE_DELIMITER = ":";
 
+    public static String getRidOfQuotes(String value){
+        String quote = new String(new char[]{(char)QUOTES_SYMBOL_CODE});
+        if ((value.startsWith(quote))&&(value.endsWith(quote))){
+            value = value.substring(1, value.length()-1);
+        }
+        return value;
+    }
+
+    /*
+        private String getRidOfQuotes(String value){
+        Character firstChar = value.charAt(0);
+        Character lastChar = value.charAt(value.length()-1);
+        //FIXME: контест по обфускации? :)
+        //String QUOTE = "\"";
+        //FIXME value.startsWith(QUOTE) && value.endsWith(QUOTE)
+        if ((firstChar.equals((char)34))&&(lastChar.equals((char)34))){
+            value = value.substring(1, value.length()-1);
+        }
+        return value;
+    }
+     */
 
     private StreamReader streamReader;
     // FIXME: это на самом деле Set<Character> (done)
@@ -40,8 +63,15 @@ public class SmartStreamReader {
         chunk = removeInsignificantSymbols(chunk);
         chunk = removeEscapeChar(chunk);
 
-        String value = convertCodeSequenceToString(chunk);
+        String value = StreamReaderStatic.convertCodeSequenceToString(chunk);
+
+        /*
         if (value.equals(JSON_PROPERTY_VALUE_DELIMITER)){
+            value = readNext();
+        }
+        */
+
+        if (value.equals(StreamReader.JSON_PROPERTY_VALUE_DELIMITER)){
             value = readNext();
         }
 
@@ -100,7 +130,7 @@ public class SmartStreamReader {
             }
 
         }
-        return convertCodeSequenceToArray(result);
+        return StreamReaderStatic.convertCodeSequenceToArray(result);
     }
 
     private Integer[] removeEscapeChar(Integer[] chunk){
@@ -121,11 +151,11 @@ public class SmartStreamReader {
             }
             result.add(i);
         }
-        return convertCodeSequenceToArray(result);
+        return StreamReaderStatic.convertCodeSequenceToArray(result);
 
     }
 
-    //
+    /*
     private Integer[] convertCodeSequenceToArray(List<Integer> codes) {
         //FIXME:  return codes.toArray(new Integer[codes.size()]);
         //Integer[] codesSeq = new Integer[codes.size()];
@@ -136,8 +166,9 @@ public class SmartStreamReader {
 
         return codes.toArray(new Integer[codes.size()]);
 
-    }
+    }*/
 
+    /*
     private String convertCodeSequenceToString(Integer[] codes){
         byte[] codesSeq = new byte[codes.length];
         for (int i = 0; i < codes.length; i++){
@@ -159,7 +190,7 @@ public class SmartStreamReader {
         byte[] b = {(byte) 99, (byte)97, (byte)116};
         String s = new String(b, "US-ASCII");
         */
-    }
+   // }
 
     //FIXME: с Set<Character> эта функция не нужна, JSON_MEANINGLESS_SYMBOLS.contains()
     /*
