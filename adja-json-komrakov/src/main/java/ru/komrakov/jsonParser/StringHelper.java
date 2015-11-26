@@ -1,8 +1,6 @@
 package ru.komrakov.jsonParser;
 
 import com.google.common.collect.ImmutableSet;
-import ru.komrakov.jsonParser.StreamReader.StreamReaderStatic;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

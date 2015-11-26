@@ -11,8 +11,6 @@ import java.util.Set;
 public class JSONObjectClass implements JSONObject{
 
     private Map<String,Object> properties;
-    //FIXME: Cleanup!
-    private Set<String> propertiesNames;
 
     public JSONObjectClass(){
         properties = new HashMap<>();
@@ -20,7 +18,6 @@ public class JSONObjectClass implements JSONObject{
 
     @Override
     public void add(String property, JSONElement value) {
-        //properties.put(property,new JSONPrimitiveClass(value));
         properties.put(property, value);
     }
 

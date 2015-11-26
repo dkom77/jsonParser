@@ -3,24 +3,11 @@ package ru.komrakov.jsonParser.StreamReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class StreamReader {
-    private static int READ_AHEAD_BUFFER_SIZE = 10;
+    private final static int READ_AHEAD_BUFFER_SIZE = 10;
     private Reader reader;
-
-    private static Map<Character,String> сharEventMap = new HashMap<>();
-    //TODO: Convert HasMap to Set
-    static {
-        сharEventMap.put('{',StreamReaderStatic.JSON_OBJECT_START);
-        сharEventMap.put('}',StreamReaderStatic.JSON_OBJECT_END);
-        сharEventMap.put(',',StreamReaderStatic.JSON_OBJECT_SEPARATOR);
-        сharEventMap.put('[',StreamReaderStatic.JSON_ARRAY_START);
-        сharEventMap.put(']',StreamReaderStatic.JSON_ARRAY_END);
-        сharEventMap.put(':', StreamReaderStatic.JSON_PROPERTY_VALUE_DELIMITER);
-    }
 
     public StreamReader(Reader r){
         this.reader = r;
@@ -39,7 +26,7 @@ public class StreamReader {
             return new Integer[]{StreamReaderStatic.END_OF_STREAM};
         }
 
-        if (сharEventMap.get((char)code) != null){
+        if (StreamReaderStatic.isJSONControlSymbol(code)){
             codes = new ArrayList<>();
             codes.add(code);
             return StreamReaderStatic.convertCodeSequenceToArray(codes);
@@ -48,7 +35,8 @@ public class StreamReader {
         while (!isTerminal(code)){
             codes.add(code);
             code = readCharCodeFromStream();
-            if (сharEventMap.get((char)code) != null){
+
+            if (StreamReaderStatic.isJSONControlSymbol(code)){
                 restoreStreamPosition();
                 return StreamReaderStatic.convertCodeSequenceToArray(codes);
             }
@@ -83,16 +71,16 @@ public class StreamReader {
     }
 
     //FIXME: private char readCharFromStream() наверное избавил бы от кучи лишних кастов и прочих возможных ошибок
+
     private int readCharCodeFromStream() {
-        int code = -1;
+        int code = StreamReaderStatic.END_OF_STREAM;
         try {
             if (reader != null){
                 code = reader.read();
             }else{
-                code = -1;
                 return code;
             }
-            if (code == -1){
+            if (code == StreamReaderStatic.END_OF_STREAM){
                 reader.close();
                 reader = null;
             }
