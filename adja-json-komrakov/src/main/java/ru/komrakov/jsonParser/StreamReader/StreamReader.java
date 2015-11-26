@@ -1,42 +1,25 @@
 package ru.komrakov.jsonParser.StreamReader;
 
-import com.google.common.base.Charsets;
-import jdk.nashorn.internal.ir.LiteralNode;
-import org.apache.commons.lang3.ArrayUtils;
-
 import java.io.IOException;
 import java.io.Reader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StreamReader {
-
-    public static int END_OF_STREAM = -1;
-    public static String NO_MORE_SYMBOLS_TO_READ = "";
-
-    //FIXME: DRY: сколько раз в этом проекте пришлось объявить { } и тп? :) все надо собрать в одну кучу.
-    //FIXME: причем судя по всему токены лучше хранить в enum. (Android отдельная песня)
-    public final static String JSON_OBJECT_START = "{";
-    public final static String JSON_OBJECT_END = "}";
-    public final static String JSON_OBJECT_SEPARATOR = ",";
-    public final static String JSON_ARRAY_START = "[";
-    public final static String JSON_ARRAY_END = "]";
-    public final static String JSON_PROPERTY_VALUE_DELIMITER = ":";
-
-
     private static int READ_AHEAD_BUFFER_SIZE = 10;
     private Reader reader;
 
-    //FIXME: в яве с большой буквы принято называть только типы/классы. Константы - большими буквами.
-    private static Map<Character,String> сharEventMap = new HashMap<Character, String>();
-    {
-        сharEventMap.put('{',JSON_OBJECT_START);
-        сharEventMap.put('}',JSON_OBJECT_END);
-        сharEventMap.put(',',JSON_OBJECT_SEPARATOR);
-        сharEventMap.put('[',JSON_ARRAY_START);
-        сharEventMap.put(']',JSON_ARRAY_END);
-        сharEventMap.put(':', JSON_PROPERTY_VALUE_DELIMITER);
+    private static Map<Character,String> сharEventMap = new HashMap<>();
+    static {
+        сharEventMap.put('{',StreamReaderStatic.JSON_OBJECT_START);
+        сharEventMap.put('}',StreamReaderStatic.JSON_OBJECT_END);
+        сharEventMap.put(',',StreamReaderStatic.JSON_OBJECT_SEPARATOR);
+        сharEventMap.put('[',StreamReaderStatic.JSON_ARRAY_START);
+        сharEventMap.put(']',StreamReaderStatic.JSON_ARRAY_END);
+        сharEventMap.put(':', StreamReaderStatic.JSON_PROPERTY_VALUE_DELIMITER);
     }
-
 
     public StreamReader(Reader r){
         this.reader = r;
@@ -51,10 +34,8 @@ public class StreamReader {
         int code = readCharCodeFromStream();
         markStreamPosition();
 
-        //FIXME: лишние скобки
-        if((isTerminal(code))){
-            Integer[] a = {END_OF_STREAM};
-            return a;
+        if(isTerminal(code)){
+            return new Integer[]{StreamReaderStatic.END_OF_STREAM};
         }
 
         if (сharEventMap.get((char)code) != null){
@@ -76,29 +57,8 @@ public class StreamReader {
         return StreamReaderStatic.convertCodeSequenceToArray(codes);
     }
 
-    /*
-    //FIXME: DRY: я это видел уже где-то!
-    private Integer[] convertCodeSequenceToArray(List<Integer> codes) {
-        Integer[] codesSeq = new Integer[codes.size()];
-        for (int i = 0; i < codes.size(); i++) {
-            codesSeq[i] = codes.get(i);
-        }
-        return codesSeq;
-
-    }
-    */
-
     private Boolean isTerminal(Integer code){
-        //FIXME: return code == END_OF_STREAM;
-        /*
-        Boolean isTerminal = false;
-        if (code == END_OF_STREAM){
-            isTerminal = true;
-        }
-        return isTerminal;
-         */
-        return code == END_OF_STREAM;
-
+        return code == StreamReaderStatic.END_OF_STREAM;
     }
 
     private void markStreamPosition(){
