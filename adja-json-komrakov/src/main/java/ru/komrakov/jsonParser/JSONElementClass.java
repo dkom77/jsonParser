@@ -118,14 +118,4 @@ public class JSONElementClass implements ru.nojs.json.JSONElement {
         return ((JSONPrimitiveClass)value).isJsonPrimitive();
     }
 
-    //FIXME: Cleanup
-    private boolean isNull(Object o){
-        /*
-        if (o == null){
-            return true;
-        }
-        return false;
-        */
-        return o == null;
-    }
 }
