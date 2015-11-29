@@ -5,6 +5,7 @@ import ru.komrakov.jsonParser.StreamReader.StreamReaderStatic;
 import ru.nojs.json.JSONElement;
 import ru.nojs.json.StreamingJsonParser;
 
+import java.io.IOException;
 import java.io.Reader;
 
 public class ImplementedJsonParser implements StreamingJsonParser {
@@ -12,12 +13,17 @@ public class ImplementedJsonParser implements StreamingJsonParser {
     @Override
     public JSONElement parse(Reader r) throws IllegalArgumentException{
         SmartStreamReader reader = new SmartStreamReader(r);
-        return buildJSON(null, reader);
+        try{
+            return buildJSON(null, reader);
+        }catch (IOException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    private JSONElement buildJSON(JSONElement element, SmartStreamReader reader) throws IllegalArgumentException{
-        String value = reader.readNext();
+    private JSONElement buildJSON(JSONElement element, SmartStreamReader reader) throws IllegalArgumentException, IOException{
 
+        String value = reader.readNext();
         if (value.equals(StreamReaderStatic.NO_MORE_SYMBOLS_TO_READ)) {
             return element;
         }
