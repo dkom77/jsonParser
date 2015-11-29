@@ -21,39 +21,32 @@ public class StreamReader {
         List<Character> codes = new ArrayList<>();
 
         char code = readCharFromStream();
-        markStreamPosition();
+        StreamWatcher watcher = new StreamWatcher(code);
 
-        if (isTerminal(code)) {
-            return new Character[]{StreamReaderWatcher.END_OF_STREAM};
+        markStreamPosition();
+        if (watcher.endOfStreamReached()) {
+            return new Character[]{StreamWatcher.END_OF_STREAM};
         }
 
-        //if (StreamReaderWatcher.isJSONControlSymbol(code)) {
-        if (new StreamReaderWatcher(code).isJSONControlSymbol()) {
+        if (new StreamWatcher(code).isJSONControlSymbol()) {
             codes = new ArrayList<>();
             codes.add(code);
-            //return StreamReaderWatcher.convertCodeSequenceToArray(codes);
             return codes.toArray(new Character[codes.size()]);
         }
 
-        while (!isTerminal(code)) {
+        while (!watcher.endOfStreamReached()) {
             codes.add(code);
             code = readCharFromStream();
+            watcher = new StreamWatcher(code);
 
-            //if (StreamReaderWatcher.isJSONControlSymbol(code)) {
-            if (new StreamReaderWatcher(code).isJSONControlSymbol()) {
+            if (new StreamWatcher(code).isJSONControlSymbol()) {
                 restoreStreamPosition();
-                //return StreamReaderWatcher.convertCodeSequenceToArray(codes);
                 return codes.toArray(new Character[codes.size()]);
             }
             markStreamPosition();
         }
 
-        // return StreamReaderWatcher.convertCodeSequenceToArray(codes);
         return codes.toArray(new Character[codes.size()]);
-    }
-
-    private Boolean isTerminal(char code) {
-        return code == StreamReaderWatcher.END_OF_STREAM;
     }
 
     private void markStreamPosition() {
@@ -77,7 +70,7 @@ public class StreamReader {
     }
 
     private char readCharFromStream() throws IOException{
-        char code = StreamReaderWatcher.END_OF_STREAM;
+        char code = StreamWatcher.END_OF_STREAM;
 
         try {
             if (reader != null) {
@@ -88,7 +81,7 @@ public class StreamReader {
             throw new IOException("Failed to read from stream");
         }
 
-        if (code == StreamReaderWatcher.END_OF_STREAM) {
+        if (code == StreamWatcher.END_OF_STREAM) {
             closeReader();
         }
 
