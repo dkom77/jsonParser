@@ -64,7 +64,6 @@ public class StringHelper {
         return this;
     }
 
-    //FIXME: на такие вещи надо писать юнит-тесты :(
     public StringHelper removeInsignificantSymbols(){
         char[] chunk = value.toCharArray();
         List<Character> result = new ArrayList<>();
