@@ -18,10 +18,11 @@ public class SmartStreamReader {
         if (chunk[0].equals(StreamReaderStatic.END_OF_STREAM)){
             return StreamReaderStatic.NO_MORE_SYMBOLS_TO_READ;
         }
-        chunk = StreamReaderStatic.convertCodeSequenceToArray(StringHelper.removeInsignificantSymbols(chunk));
-        chunk = StreamReaderStatic.convertCodeSequenceToArray(StringHelper.removeEscapeChar(chunk));
+        //chunk = StreamReaderStatic.convertCodeSequenceToArray(StringHelper.removeInsignificantSymbols(chunk));
+        //chunk = StreamReaderStatic.convertCodeSequenceToArray(StringHelper.removeEscapeChar(chunk));
 
-        String value = StreamReaderStatic.convertCodeSequenceToString(chunk);
+        //String value = StreamReaderStatic.convertCodeSequenceToString(chunk);
+        String value = new StringHelper(chunk).removeInsignificantSymbols().removeEscapeChar().get();
 
         if (value.equals(StreamReaderStatic.JSON_PROPERTY_VALUE_DELIMITER)){
             value = readNext();

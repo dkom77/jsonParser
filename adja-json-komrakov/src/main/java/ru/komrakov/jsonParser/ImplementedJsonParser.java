@@ -35,7 +35,8 @@ public class ImplementedJsonParser implements StreamingJsonParser {
             element = new JSONObjectClass();
             while (!value.equals(StreamReaderStatic.JSON_OBJECT_END)) {
                 value = reader.readNext();//get rid of "{"
-                String propertyName = StringHelper.getRidOfQuotes(value);
+                //String propertyName = StringHelper.removeQuotes(value);
+                String propertyName = new StringHelper(value).removeQuotes().get();
                 JSONElement propertyValue = buildJSON(null, reader);
                 if (propertyValue == null) {
                     throw new IllegalArgumentException("JSON property can't be null");

@@ -38,18 +38,17 @@ public class JSONPrimitiveClass implements JSONPrimitive{
 
     @Override
     public boolean getAsBoolean() {
+        StringHelper helper = new StringHelper((String) value);
 
-        String probe = (String) value;
-
-        if (StringHelper.stringValueInQuotes(probe)){
+        if (helper.isValueInQuotes()){
             throw new IllegalStateException("Boolean value shouldn't be in quotes");
         }
 
-        if (looksLikeBoolean(probe)) {
-            if (probe.equals("true")) {
+        if (looksLikeBoolean(helper.get())) {
+            if (helper.get().equals("true")) {
                 return true;
             }
-            if (probe.equals("false")) {
+            if (helper.get().equals("false")) {
                 return false;
             }
             throw new IllegalArgumentException("Boolean value spelled incorrectly");
@@ -120,11 +119,13 @@ public class JSONPrimitiveClass implements JSONPrimitive{
     @Override
     public String getAsString() {
 
-        if (StringHelper.containNotClosedQuotes((String)value)){
+        StringHelper helper = new StringHelper((String) value);
+
+        if (helper.isValueContainNotClosedQuotes()){
             throw new IllegalArgumentException("String value shouldn't contain not closed quote");
         }
 
-        return StringHelper.getRidOfQuotes((String) value);
+        return helper.removeQuotes().get();
     }
 
     @Override
