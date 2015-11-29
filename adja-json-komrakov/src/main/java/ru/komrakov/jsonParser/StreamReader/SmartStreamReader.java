@@ -16,8 +16,8 @@ public class SmartStreamReader {
     public String readNext() throws IllegalArgumentException, IOException{
         Character[]chunk = streamReader.readNext();
 
-        if (chunk[0].equals(StreamReaderStatic.END_OF_STREAM)){
-            return StreamReaderStatic.NO_MORE_SYMBOLS_TO_READ;
+        if (chunk[0].equals(StreamReaderWatcher.END_OF_STREAM)){
+            return new String();
         }
 
         String value = new StringHelper(chunk)
@@ -25,7 +25,8 @@ public class SmartStreamReader {
                 .removeEscapeChar()
                 .get();
 
-        if (value.equals(StreamReaderStatic.JSON_PROPERTY_VALUE_DELIMITER)){
+        //if (value.equals(StreamReaderWatcher.JSON_SYMBOLS_SET.JSON_PROPERTY_VALUE_DELIMITER.get())){
+        if (new StreamReaderWatcher(value).jsonPropertyValueDelimiterFound()){
             value = readNext();
         }
 
